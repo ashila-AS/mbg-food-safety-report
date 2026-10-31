@@ -26,6 +26,7 @@ class StoreReportRequest extends FormRequest
             'deskripsi' => ['required', 'string', 'min:20', 'max:2000'],
             'gejala' => ['required', 'string', 'max:1000'],
             'jumlah_terdampak' => ['required', 'integer', 'min:1', 'max:1000'],
+            'bukti' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ];
     }
 }

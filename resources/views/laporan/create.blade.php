@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Buat Laporan')
@@ -16,7 +17,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('laporan.store') }}">
+        <form method="POST" action="{{ route('laporan.store') }}" enctype="multipart/form-data">
             @csrf
 
             <label for="sekolah_id">Sekolah</label>
@@ -54,6 +55,11 @@
             <label for="jumlah_terdampak">Jumlah terdampak</label>
             <input type="number" name="jumlah_terdampak" id="jumlah_terdampak"
                    value="{{ old('jumlah_terdampak') }}" min="1" required>
+
+            <!-- Input upload bukti -->
+            <label for="bukti">Bukti pendukung (opsional)</label>
+            <input type="file" name="bukti" id="bukti" accept=".jpg,.jpeg,.png,.pdf">
+            <small>Format JPG, PNG, atau PDF. Maksimal 2 MB.</small>
 
             <p style="margin-top:18px;">
                 <button type="submit">Kirim Laporan</button>

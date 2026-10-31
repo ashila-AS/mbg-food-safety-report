@@ -28,7 +28,7 @@ class ReportController extends Controller
         return view('laporan.create', compact('sekolah', 'distribusi'));
     }
 
-    public function store(StoreReportRequest $request)
+        public function store(StoreReportRequest $request)
     {
         $laporan = new Laporan($request->safe()->only([
             'distribusi_id',
@@ -38,6 +38,11 @@ class ReportController extends Controller
             'jumlah_terdampak',
         ]));
         $laporan->user_id = $request->user()->getKey();
+
+        if ($request->hasFile('bukti')) {
+            $laporan->path_bukti = $request->file('bukti')->store('bukti', 'local');
+        }
+
         $laporan->save();
 
         return redirect()->route('laporan.index')
