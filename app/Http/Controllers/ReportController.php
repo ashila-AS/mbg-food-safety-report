@@ -7,6 +7,7 @@ use App\Models\Distribusi;
 use App\Models\Laporan;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ReportController extends Controller
 {
@@ -47,5 +48,14 @@ class ReportController extends Controller
 
         return redirect()->route('laporan.index')
             ->with('success', 'Laporan berhasil dikirim.');
+    }
+
+        public function show(Laporan $laporan)
+    {
+        Gate::authorize('view', $laporan);
+
+        $laporan->load('distribusi.sekolah', 'pelapor');
+
+        return view('laporan.show', compact('laporan'));
     }
 }

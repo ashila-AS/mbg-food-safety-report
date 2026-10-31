@@ -1,0 +1,59 @@
+@extends('layouts.app')
+
+@section('title', 'Detail Laporan')
+
+@section('content')
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>Detail Laporan #{{ $laporan->laporan_id }}</h2>
+            <span class="badge">{{ $laporan->status }}</span>
+        </div>
+
+        <table>
+            <tr>
+                <th style="width:220px;">Pelapor</th>
+                <td>{{ $laporan->pelapor->nama }}</td>
+            </tr>
+            <tr>
+                <th>Sekolah</th>
+                <td>{{ $laporan->distribusi->sekolah->nama_sekolah }}</td>
+            </tr>
+            <tr>
+                <th>Distribusi</th>
+                <td>
+                    {{ \Illuminate\Support\Carbon::parse($laporan->distribusi->tanggal)->format('d/m/Y') }}
+                    | {{ $laporan->distribusi->menu }}
+                    | {{ $laporan->distribusi->nama_sppg }}
+                </td>
+            </tr>
+            <tr>
+                <th>Waktu kejadian</th>
+                <td>{{ $laporan->waktu_kejadian->format('d/m/Y H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Jumlah terdampak</th>
+                <td>{{ $laporan->jumlah_terdampak }}</td>
+            </tr>
+            <tr>
+                <th>Deskripsi</th>
+                <td>{!! nl2br(e($laporan->deskripsi)) !!}</td>
+            </tr>
+            <tr>
+                <th>Gejala</th>
+                <td>{!! nl2br(e($laporan->gejala)) !!}</td>
+            </tr>
+            <tr>
+                <th>Bukti pendukung</th>
+                <td>{{ $laporan->path_bukti ? 'Ada' : 'Tidak ada' }}</td>
+            </tr>
+            <tr>
+                <th>Dikirim</th>
+                <td>{{ $laporan->created_at->format('d/m/Y H:i') }}</td>
+            </tr>
+        </table>
+
+        <p style="margin-top:18px;">
+            <a href="{{ route('laporan.index') }}" class="btn btn-light">Kembali</a>
+        </p>
+    </div>
+@endsection
