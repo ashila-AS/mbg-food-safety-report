@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Laporan;
+use App\Services\LaporanWorkflow;
+use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
@@ -13,5 +15,14 @@ class ReviewController extends Controller
             ->paginate(10);
 
         return view('tinjauan.index', compact('laporan'));
+    }
+
+        public function start(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
+    {
+        $laporan->peninjau_id = $request->user()->getKey();
+        $workflow->transition($laporan, Laporan::DITINJAU, $request->user());
+
+        return redirect()->route('laporan.show', $laporan)
+            ->with('success', 'Laporan mulai ditinjau.');
     }
 }

@@ -37,3 +37,9 @@ Route::middleware(['auth', 'no-cache'])->group(function () {
 Route::middleware(['auth', 'no-cache', 'role:pemantau,koordinator'])->group(function () {
     Route::get('/tinjauan', [ReviewController::class, 'index'])->name('tinjauan.index');
 });
+
+Route::middleware(['auth', 'no-cache', 'role:pemantau'])->group(function () {
+    Route::post('/laporan/{laporan}/mulai-tinjau', [ReviewController::class, 'start'])
+        ->whereNumber('laporan')
+        ->name('laporan.mulai-tinjau');
+});

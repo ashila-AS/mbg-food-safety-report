@@ -10,6 +10,10 @@
             <span class="badge">{{ $laporan->status }}</span>
         </div>
 
+        @if ($errors->any())
+            <div class="alert alert-error">{{ $errors->first() }}</div>
+        @endif
+
         <table>
             @if (auth()->user()->role === 'pelapor')
                 <tr>
@@ -71,8 +75,17 @@
             </tr>
         </table>
 
+        @if (auth()->user()->role === 'pemantau' && $laporan->status === \App\Models\Laporan::DIKIRIM)
+            <form method="POST" action="{{ route('laporan.mulai-tinjau', $laporan->laporan_id) }}" style="margin-top:18px;">
+                @csrf
+                <button type="submit">Mulai meninjau</button>
+            </form>
+        @endif
+
         <p style="margin-top:18px;">
-            <a href="{{ auth()->user()->role === 'pelapor' ? route('laporan.index') : route('tinjauan.index') }}" class="btn btn-light">Kembali</a>
+            <a href="{{ auth()->user()->role === 'pelapor' ? route('laporan.index') : route('tinjauan.index') }}" class="btn btn-light">
+                Kembali
+            </a>
         </p>
     </div>
 @endsection
