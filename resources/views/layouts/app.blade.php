@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Pelaporan Keamanan Makanan MBG')</title>
+
+    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; flex-wrap: wrap; }
+    .pagination li a, .pagination li span { display: block; padding: 6px 12px; border: 1px solid #cbd2d9; border-radius: 6px; text-decoration: none; color: #1f2933; background: #fff; }
+    .pagination li.active span { background: #1f4e79; color: #fff; border-color: #1f4e79; }
+    .pagination li.disabled span { color: #9aa5b1; background: #f4f6f8; }
+
     <style>
         * { box-sizing: border-box; }
         body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f8; color: #1f2933; }

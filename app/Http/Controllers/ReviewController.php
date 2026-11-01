@@ -5,16 +5,69 @@ namespace App\Http\Controllers;
 use App\Models\Laporan;
 use App\Services\LaporanWorkflow;
 use Illuminate\Http\Request;
+use App\Models\Sekolah;
+use Illuminate\Validation\Rule;
 
 class ReviewController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $laporan = Laporan::with('distribusi.sekolah')
-            ->latest()
-            ->paginate(10);
+        $statuses = [
+            Laporan::DIKIRIM,
+            Laporan::DITINJAU,
+            Laporan::DIKEMBALIKAN,
+            Laporan::DITANDAI,
+            Laporan::DITERUSKAN,
+        ];
 
-        return view('tinjauan.index', compact('laporan'));
+        $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'string', Rule::in($statuses)],
+            'sekolah_id' => ['nullable', 'integer', 'exists:sekolah,sekolah_id'],
+        ]);
+
+        $query = Laporan::with('distribusi.sekolah');
+
+        if ($request->filled('q')) {
+            $q = trim($request->input('q'));
+
+            $query->where(function ($w) use ($q) {
+                $w->where('deskripsi', 'like', "%{$q}%")
+                    ->orWhere('gejala', 'like', "%{$q}%")
+                    ->orWhereHas('distribusi', function ($d) use ($q) {
+                        $d->where('menu', 'like', "%{$q}%")
+                            ->orWhereHas('sekolah', function ($s) use ($q) {
+                                $s->where('nama_sekolah', 'like', "%{$q}%");
+                            });
+                    });
+
+                if (ctype_digit($q)) {
+                    $w->orWhere('laporan_id', (int) $q);
+                }
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('sekolah_id')) {
+            $sekolahId = $request->integer('sekolah_id');
+
+            $query->whereHas('distribusi', function ($d) use ($sekolahId) {
+                $d->where('sekolah_id', $sekolahId);
+            });
+        }
+
+        $laporan = $query
+            ->latest()
+            ->orderByDesc('laporan_id')
+            ->paginate(10)
+            ->withQueryString();
+
+        $sekolah = Sekolah::orderBy('nama_sekolah')->get();
+
+        return view('tinjauan.index', compact('laporan', 'sekolah', 'statuses'));
     }
 
     public function start(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
