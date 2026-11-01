@@ -6,6 +6,9 @@ use App\Models\Laporan;
 use App\Models\CatatanLaporan;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class LaporanWorkflow
 {
@@ -65,5 +68,40 @@ class LaporanWorkflow
             'user_id' => $user->getKey(),
             'isi' => $isi,
         ]);
+    }
+
+    public function assertEditable(Laporan $laporan): void
+    {
+        // BR-01: laporan hanya dapat diedit saat status Dikirim atau Dikembalikan
+        if (! in_array($laporan->status, [Laporan::DIKIRIM, Laporan::DIKEMBALIKAN], true)) {
+            throw ValidationException::withMessages([
+                'status' => "Laporan tidak dapat diubah karena berstatus {$laporan->status}.",
+            ]);
+        }
+    }
+
+    public function updateReport(Laporan $laporan, User $user, array $data, ?UploadedFile $bukti = null): void
+    {
+        $this->assertEditable($laporan);
+
+        DB::transaction(function () use ($laporan, $user, $data, $bukti) {
+            $returned = $laporan->status === Laporan::DIKEMBALIKAN;
+            $oldPath = $laporan->path_bukti;
+
+            if ($bukti) {
+                $data['path_bukti'] = $bukti->store('bukti', 'local');
+            }
+
+            $laporan->fill($data);
+            $laporan->save();
+
+            if ($returned) {
+                $this->transition($laporan, Laporan::DIKIRIM, $user);
+            }
+
+            if ($bukti && $oldPath) {
+                Storage::disk('local')->delete($oldPath);
+            }
+        });
     }
 }

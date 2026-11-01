@@ -121,6 +121,10 @@
             </div>
         @endif
 
+        @if (auth()->user()->role === 'pelapor' && in_array($laporan->status, [\App\Models\Laporan::DIKIRIM, \App\Models\Laporan::DIKEMBALIKAN], true))
+            <a href="{{ route('laporan.edit', $laporan->laporan_id) }}" class="btn" style="margin-top:18px;">Edit laporan</a>
+        @endif
+
         <p style="margin-top:18px;">
             <a href="{{ auth()->user()->role === 'pelapor' ? route('laporan.index') : route('tinjauan.index') }}" class="btn btn-light">
                 Kembali

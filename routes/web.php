@@ -23,6 +23,12 @@ Route::middleware(['auth', 'no-cache', 'role:pelapor'])->group(function () {
     Route::get('/laporan', [ReportController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/buat', [ReportController::class, 'create'])->name('laporan.create');
     Route::post('/laporan', [ReportController::class, 'store'])->name('laporan.store');
+    Route::get('/laporan/{laporan}/edit', [ReportController::class, 'edit'])
+        ->whereNumber('laporan')
+        ->name('laporan.edit');
+    Route::put('/laporan/{laporan}', [ReportController::class, 'update'])
+        ->whereNumber('laporan')
+        ->name('laporan.update');
 });
 
 Route::middleware(['auth', 'no-cache'])->group(function () {

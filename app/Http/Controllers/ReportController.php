@@ -9,6 +9,9 @@ use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateReportRequest;
+use App\Services\LaporanWorkflow;
+use Illuminate\Validation\ValidationException;
 
 class ReportController extends Controller
 {
@@ -76,5 +79,39 @@ class ReportController extends Controller
         );
 
         return Storage::disk('local')->response($laporan->path_bukti);
+    }
+
+    public function edit(Laporan $laporan, LaporanWorkflow $workflow)
+    {
+        Gate::authorize('update', $laporan);
+
+        try {
+            $workflow->assertEditable($laporan);
+        } catch (ValidationException $e) {
+            return redirect()->route('laporan.show', $laporan)
+                ->withErrors($e->errors());
+        }
+
+        $laporan->load('distribusi.sekolah');
+
+        return view('laporan.edit', compact('laporan'));
+    }
+
+    public function update(UpdateReportRequest $request, Laporan $laporan, LaporanWorkflow $workflow)
+    {
+        try {
+            $workflow->updateReport(
+                $laporan,
+                $request->user(),
+                $request->safe()->only(['waktu_kejadian', 'deskripsi', 'gejala', 'jumlah_terdampak']),
+                $request->file('bukti')
+            );
+        } catch (ValidationException $e) {
+            return redirect()->route('laporan.show', $laporan)
+                ->withErrors($e->errors());
+        }
+
+        return redirect()->route('laporan.show', $laporan)
+            ->with('success', 'Laporan berhasil diperbarui.');
     }
 }
