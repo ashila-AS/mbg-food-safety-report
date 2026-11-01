@@ -43,6 +43,7 @@ class ReportController extends Controller
             'jumlah_terdampak',
         ]));
         $laporan->user_id = $request->user()->getKey();
+        $laporan->status = Laporan::DIKIRIM;
 
         if ($request->hasFile('bukti')) {
             $laporan->path_bukti = $request->file('bukti')->store('bukti', 'local');
@@ -60,13 +61,20 @@ class ReportController extends Controller
 
         $laporan->load('distribusi.sekolah');
 
+        $terkait = collect();
+
         if ($request->user()->role === 'pelapor') {
             $laporan->load('pelapor');
         } else {
             $laporan->load('catatan.penulis', 'penerusan.pencatat');
+
+            $terkait = Laporan::where('distribusi_id', $laporan->distribusi_id)
+                ->where('laporan_id', '!=', $laporan->laporan_id)
+                ->orderByDesc('waktu_kejadian')
+                ->get(['laporan_id', 'status', 'waktu_kejadian']);
         }
 
-        return view('laporan.show', compact('laporan'));
+        return view('laporan.show', compact('laporan', 'terkait'));
     }
 
     public function evidence(Laporan $laporan)
