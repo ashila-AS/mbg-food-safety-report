@@ -54,7 +54,7 @@ Alur: `Dikirim → Ditinjau → Ditandai untuk diteruskan → Diteruskan`, denga
 
 1.  BR-01 : Laporan hanya dapat diubah oleh pelapor pemiliknya saat status Dikirim atau Dikembalikan.
 2. BR-02 : Perubahan status hanya mengikuti alur yang diizinkan. Mengembalikan atau menandai laporan mensyaratkan minimal satu catatan pemantau.
-3. BR-03 : Penerusan hanya dapat dicatat saat status Ditandai untuk diteruskan atau Diteruskan, pihaknya dari daftar tetap, tidak boleh dua kali ke pihak yang sama, dan status menjadi Diteruskan setelah penerusan pertama.
+3. BR-03 : Penerusan hanya dapat dicatat saat laporan berstatus Ditandai untuk diteruskan atau Diteruskan, dan satu laporan tidak boleh diteruskan dua kali ke pihak yang sama.
 
 Logika alur status dan syarat transisinya ada di `app/Services/LaporanWorkflow.php`. Pembatasan akses ada di `app/Policies/LaporanPolicy.php` dan `app/Http/Middleware/RoleMiddleware.php`.
 
