@@ -8,6 +8,8 @@ return [
     'before_or_equal' => ':Attribute tidak boleh melebihi waktu sekarang.',
     'exists' => ':Attribute yang dipilih tidak valid.',
     'in' => ':Attribute yang dipilih tidak valid.',
+    'email' => ':Attribute harus berupa alamat email yang valid.',
+    'after_or_equal' => ':Attribute tidak boleh lebih awal dari :date.',
     'file' => ':Attribute harus berupa berkas.',
     'mimes' => ':Attribute harus berformat: :values.',
     'uploaded' => ':Attribute gagal diunggah.',
@@ -33,5 +35,9 @@ return [
         'keterangan' => 'keterangan',
         'email' => 'email',
         'password' => 'kata sandi',
+        'q' => 'kata kunci',
+        'status' => 'status',
+        'dari' => 'tanggal awal',
+        'sampai' => 'tanggal akhir',
     ],
 ];
