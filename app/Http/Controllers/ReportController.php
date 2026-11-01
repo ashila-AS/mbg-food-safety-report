@@ -51,11 +51,15 @@ class ReportController extends Controller
             ->with('success', 'Laporan berhasil dikirim.');
     }
 
-        public function show(Laporan $laporan)
+        public function show(Request $request, Laporan $laporan)
     {
         Gate::authorize('view', $laporan);
 
-        $laporan->load('distribusi.sekolah', 'pelapor');
+        $laporan->load('distribusi.sekolah');
+
+        if ($request->user()->role === 'pelapor') {
+            $laporan->load('pelapor');
+        }
 
         return view('laporan.show', compact('laporan'));
     }
