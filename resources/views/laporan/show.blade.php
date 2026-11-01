@@ -121,8 +121,48 @@
             </div>
         @endif
 
+        @if (auth()->user()->role !== 'pelapor')
+            <h3 style="margin-top:24px;">Penerusan informasi</h3>
+
+            @forelse ($laporan->penerusan->sortBy('waktu') as $p)
+                <p style="margin:6px 0;">
+                    <strong>{{ $p->pihak }}</strong>
+                    <small>{{ $p->waktu->format('d/m/Y H:i') }} oleh {{ $p->pencatat->nama }}</small>
+
+                    @if ($p->keterangan)
+                        <br>{!! nl2br(e($p->keterangan)) !!}
+                    @endif
+                </p>
+            @empty
+                <p>Belum ada penerusan.</p>
+            @endforelse
+
+            @if (auth()->user()->role === 'koordinator' && in_array($laporan->status, [\App\Models\Laporan::DITANDAI, \App\Models\Laporan::DITERUSKAN], true))
+                <form method="POST" action="{{ route('laporan.penerusan', $laporan->laporan_id) }}">
+                    @csrf
+
+                    <label for="pihak">Diteruskan kepada</label>
+                    <select name="pihak" id="pihak" required>
+                        <option value="">-- Pilih pihak --</option>
+                        @foreach (\App\Models\Penerusan::PIHAK as $pihak)
+                            <option value="{{ $pihak }}" @selected(old('pihak') === $pihak)>
+                                {{ $pihak }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <label for="keterangan">Keterangan (opsional)</label>
+                    <textarea name="keterangan" id="keterangan" rows="2">{{ old('keterangan') }}</textarea>
+
+                    <button type="submit" style="margin-top:8px;">Catat penerusan</button>
+                </form>
+            @endif
+        @endif
+
         @if (auth()->user()->role === 'pelapor' && in_array($laporan->status, [\App\Models\Laporan::DIKIRIM, \App\Models\Laporan::DIKEMBALIKAN], true))
-            <a href="{{ route('laporan.edit', $laporan->laporan_id) }}" class="btn" style="margin-top:18px;">Edit laporan</a>
+            <a href="{{ route('laporan.edit', $laporan->laporan_id) }}" class="btn" style="margin-top:18px;">
+                Edit laporan
+            </a>
         @endif
 
         <p style="margin-top:18px;">

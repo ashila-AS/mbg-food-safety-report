@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ForwardingController;
 
 Route::get('/', function () {
     return redirect()->route(auth()->check() ? 'dashboard' : 'login');
@@ -57,4 +58,10 @@ Route::middleware(['auth', 'no-cache', 'role:pemantau'])->group(function () {
     Route::post('/laporan/{laporan}/tandai', [ReviewController::class, 'flag'])
         ->whereNumber('laporan')
         ->name('laporan.tandai');
+});
+
+Route::middleware(['auth', 'no-cache', 'role:koordinator'])->group(function () {
+    Route::post('/laporan/{laporan}/penerusan', [ForwardingController::class, 'store'])
+        ->whereNumber('laporan')
+        ->name('laporan.penerusan');
 });

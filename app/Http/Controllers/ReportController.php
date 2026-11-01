@@ -63,7 +63,7 @@ class ReportController extends Controller
         if ($request->user()->role === 'pelapor') {
             $laporan->load('pelapor');
         } else {
-            $laporan->load('catatan.penulis');
+            $laporan->load('catatan.penulis', 'penerusan.pencatat');
         }
 
         return view('laporan.show', compact('laporan'));

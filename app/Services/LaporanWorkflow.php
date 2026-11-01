@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Penerusan;
 
 class LaporanWorkflow
 {
@@ -51,6 +52,12 @@ class LaporanWorkflow
             ]);
         }
 
+        if ($to === Laporan::DITERUSKAN && ! $laporan->penerusan()->exists()) {
+            throw ValidationException::withMessages([
+                'status' => 'Catat penerusan sebelum mengubah status ini.',
+            ]);
+        }
+
         $laporan->status = $to;
         $laporan->save();
     }
@@ -68,6 +75,42 @@ class LaporanWorkflow
             'user_id' => $user->getKey(),
             'isi' => $isi,
         ]);
+    }
+
+        public function recordForwarding(Laporan $laporan, User $user, string $pihak, ?string $keterangan): void
+    {
+        if ($user->role !== 'koordinator') {
+            throw ValidationException::withMessages([
+                'pihak' => 'Hanya koordinator yang dapat mencatat penerusan.',
+            ]);
+        }
+
+        // BR-03: penerusan hanya saat status Ditandai atau Diteruskan
+        if (! in_array($laporan->status, [Laporan::DITANDAI, Laporan::DITERUSKAN], true)) {
+            throw ValidationException::withMessages([
+                'pihak' => "Penerusan tidak dapat dicatat saat laporan berstatus {$laporan->status}.",
+            ]);
+        }
+
+        // BR-03: tidak boleh dua kali ke pihak yang sama
+        if ($laporan->penerusan()->where('pihak', $pihak)->exists()) {
+            throw ValidationException::withMessages([
+                'pihak' => "Informasi sudah pernah diteruskan ke {$pihak}.",
+            ]);
+        }
+
+        DB::transaction(function () use ($laporan, $user, $pihak, $keterangan) {
+            Penerusan::create([
+                'laporan_id' => $laporan->getKey(),
+                'dicatat_oleh' => $user->getKey(),
+                'pihak' => $pihak,
+                'keterangan' => $keterangan,
+            ]);
+
+            if ($laporan->status === Laporan::DITANDAI) {
+                $this->transition($laporan, Laporan::DITERUSKAN, $user);
+            }
+        });
     }
 
     public function assertEditable(Laporan $laporan): void

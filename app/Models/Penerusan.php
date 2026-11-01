@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Penerusan extends Model
 {
+    public const PIHAK = ['Sekolah', 'SPPG', 'Fasilitas kesehatan', 'Pihak terkait lain'];
+
     protected $table = 'penerusan';
     protected $primaryKey = 'penerusan_id';
     public $timestamps = false;
