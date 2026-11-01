@@ -72,7 +72,7 @@
         </table>
 
         <p style="margin-top:18px;">
-            <a href="{{ route('laporan.index') }}" class="btn btn-light">Kembali</a>
+            <a href="{{ auth()->user()->role === 'pelapor' ? route('laporan.index') : route('tinjauan.index') }}" class="btn btn-light">Kembali</a>
         </p>
     </div>
 @endsection
