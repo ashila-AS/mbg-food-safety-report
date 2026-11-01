@@ -75,6 +75,38 @@
             </tr>
         </table>
 
+        {{-- Laporan terkait dengan distribusi yang sama --}}
+        @if (auth()->user()->role !== 'pelapor')
+            <h3 style="margin-top:24px;">Laporan terkait (distribusi yang sama)</h3>
+
+            @if ($terkait->isEmpty())
+                <p>Tidak ada laporan lain pada distribusi ini.</p>
+            @else
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Status</th>
+                            <th>Waktu kejadian</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($terkait as $t)
+                            <tr>
+                                <td>#{{ $t->laporan_id }}</td>
+                                <td><span class="badge">{{ $t->status }}</span></td>
+                                <td>{{ $t->waktu_kejadian->format('d/m/Y H:i') }}</td>
+                                <td>
+                                    <a href="{{ route('laporan.show', $t->laporan_id) }}">Lihat</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        @endif
+
         @if (auth()->user()->role === 'pemantau' && $laporan->status === \App\Models\Laporan::DIKIRIM)
             <form method="POST" action="{{ route('laporan.mulai-tinjau', $laporan->laporan_id) }}" style="margin-top:18px;">
                 @csrf
