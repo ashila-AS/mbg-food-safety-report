@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -208,6 +209,10 @@
 
             @auth
                 <nav style="display: flex; gap: 16px;">
+
+                    <a href="{{ route('dashboard') }}">
+                        Dashboard
+                    </a>
 
                     @if (auth()->user()->role === 'pelapor')
 
