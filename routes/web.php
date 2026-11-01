@@ -5,6 +5,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ForwardingController;
+use App\Http\Controllers\RekapController;
 
 Route::get('/', function () {
     return redirect()->route(auth()->check() ? 'dashboard' : 'login');
@@ -43,6 +44,9 @@ Route::middleware(['auth', 'no-cache'])->group(function () {
 
 Route::middleware(['auth', 'no-cache', 'role:pemantau,koordinator'])->group(function () {
     Route::get('/tinjauan', [ReviewController::class, 'index'])->name('tinjauan.index');
+    Route::get('/rekap', [RekapController::class, 'index'])
+    ->middleware('role:pemantau,koordinator')
+    ->name('rekap.index');
 });
 
 Route::middleware(['auth', 'no-cache', 'role:pemantau'])->group(function () {
