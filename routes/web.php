@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,4 +32,8 @@ Route::middleware(['auth', 'no-cache'])->group(function () {
     Route::get('/laporan/{laporan}/bukti', [ReportController::class, 'evidence'])
         ->whereNumber('laporan')
         ->name('laporan.bukti');
+});
+
+Route::middleware(['auth', 'no-cache', 'role:pemantau,koordinator'])->group(function () {
+    Route::get('/tinjauan', [ReviewController::class, 'index'])->name('tinjauan.index');
 });
