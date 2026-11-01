@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('title', 'Detail Laporan')
@@ -48,12 +47,12 @@
 
             <tr>
                 <th>Deskripsi</th>
-                <td>{!! nl2br(e($laporan->deskripsi)) !!}</td>
+                <td class="teks-panjang">{!! nl2br(e($laporan->deskripsi)) !!}</td>
             </tr>
 
             <tr>
                 <th>Gejala</th>
-                <td>{!! nl2br(e($laporan->gejala)) !!}</td>
+                <td class="teks-panjang">{!! nl2br(e($laporan->gejala)) !!}</td>
             </tr>
 
             <tr>
@@ -75,7 +74,6 @@
             </tr>
         </table>
 
-        {{-- Laporan terkait dengan distribusi yang sama --}}
         @if (auth()->user()->role !== 'pelapor')
             <h3 style="margin-top:24px;">Laporan terkait (distribusi yang sama)</h3>
 

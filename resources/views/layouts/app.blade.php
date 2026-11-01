@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -13,10 +12,8 @@
             --pink: #f9c5d1;
             --pink-hover: #f4aebf;
             --berry: #5a2433;
-
             --matcha: #dcefd5;
             --matcha-deep: #2f4f2f;
-
             --bg: #fffafb;
             --text: #3d2b30;
             --line: #f3e2e6;
@@ -44,6 +41,10 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(90, 36, 51, .10);
+        }
+
+        .teks-panjang,
+        .card p {
             overflow-wrap: anywhere;
             word-break: break-word;
         }
@@ -113,6 +114,7 @@
             text-decoration: none;
             display: inline-block;
             font: inherit;
+            white-space: nowrap;
         }
 
         button:hover,
@@ -150,38 +152,49 @@
         }
 
         .pagination {
-            display: flex;
-            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .pagination-info {
+            margin: 0 0 8px;
+            font-size: 14px;
+        }
+
+        .pagination ul {
             list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
             padding: 0;
             margin: 0;
-            flex-wrap: wrap;
         }
 
-        .pagination li a,
-        .pagination li span {
-            display: block;
+        .pagination a,
+        .pagination span {
+            display: inline-block;
             padding: 6px 12px;
-            border: 1px solid #ecd3d9;
             border-radius: 6px;
+            background: var(--matcha);
+            color: var(--matcha-deep);
             text-decoration: none;
+        }
+
+        .pagination a:hover {
+            background: #cbe5c1;
+        }
+
+        .pagination .active span {
+            background: var(--pink);
             color: var(--berry);
-            background: #fff;
+            font-weight: 600;
         }
 
-        .pagination li.active span {
-            background: var(--berry);
-            color: #fff;
-            border-color: var(--berry);
-        }
-
-        .pagination li.disabled span {
-            color: #b8a4aa;
-            background: #f9f1f3;
+        .pagination .disabled span {
+            background: #f6f1f2;
+            color: #b9a8ad;
         }
     </style>
 </head>
-
 
 <body>
 

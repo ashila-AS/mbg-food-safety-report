@@ -77,7 +77,7 @@
             </div>
 
             <div style="margin-top:16px;">
-                {{ $laporan->links('pagination::default') }}
+                {{ $laporan->links('pagination.pastel') }}
             </div>
         @endif
     </div>
