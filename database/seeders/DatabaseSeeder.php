@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             SekolahSeeder::class,
             DistribusiSeeder::class,
             UserSeeder::class,
+            LaporanSeeder::class,
         ]);
     }
 }
