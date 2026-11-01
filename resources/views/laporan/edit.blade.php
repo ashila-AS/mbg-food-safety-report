@@ -28,7 +28,8 @@
 
             <label for="waktu_kejadian">Waktu kejadian</label>
             <input type="datetime-local" name="waktu_kejadian" id="waktu_kejadian"
-                   value="{{ old('waktu_kejadian', $laporan->waktu_kejadian->format('Y-m-d\TH:i')) }}" required>
+                   value="{{ old('waktu_kejadian', $laporan->waktu_kejadian->format('Y-m-d\TH:i')) }}" 
+                   max="{{ now()->format('Y-m-d\TH:i') }}" required>
 
             <label for="deskripsi">Deskripsi kejadian</label>
             <textarea name="deskripsi" id="deskripsi" rows="4" required>{{ old('deskripsi', $laporan->deskripsi) }}</textarea>
