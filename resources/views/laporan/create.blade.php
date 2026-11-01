@@ -31,15 +31,8 @@
             </select>
 
             <label for="distribusi_id">Distribusi makanan</label>
-            <select name="distribusi_id" id="distribusi_id" required>
-                <option value="">-- Pilih distribusi --</option>
-                @foreach ($distribusi as $d)
-                    <option value="{{ $d->distribusi_id }}" @selected(old('distribusi_id') == $d->distribusi_id)>
-                        {{ $d->sekolah->nama_sekolah }} |
-                        {{ \Illuminate\Support\Carbon::parse($d->tanggal)->format('d/m/Y') }} |
-                        {{ $d->menu }}
-                    </option>
-                @endforeach
+            <select name="distribusi_id" id="distribusi_id" required disabled>
+                <option value="">-- Pilih sekolah dulu --</option>
             </select>
 
             <label for="waktu_kejadian">Waktu kejadian</label>
@@ -67,4 +60,69 @@
             </p>
         </form>
     </div>
+
+    <script>
+        const sekolahSelect = document.getElementById('sekolah_id');
+        const distribusiSelect = document.getElementById('distribusi_id');
+        const urlTemplate = @json(route('sekolah.distribusi', ['sekolah' => '__ID__']));
+        const distribusiLama = @json(old('distribusi_id'));
+
+        function setPlaceholder(teks) {
+            distribusiSelect.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = teks;
+            distribusiSelect.appendChild(opt);
+        }
+
+        async function muatDistribusi(sekolahId, dipilih) {
+            if (!sekolahId) {
+                setPlaceholder('-- Pilih sekolah dulu --');
+                distribusiSelect.disabled = true;
+                return;
+            }
+
+            setPlaceholder('Memuat distribusi...');
+            distribusiSelect.disabled = true;
+
+            try {
+                const response = await fetch(urlTemplate.replace('__ID__', sekolahId), {
+                    headers: { 'Accept': 'application/json' },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Gagal memuat distribusi');
+                }
+
+                const data = await response.json();
+
+                setPlaceholder(data.length ? '-- Pilih distribusi --' : 'Belum ada distribusi untuk sekolah ini');
+
+                data.forEach(function (d) {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = d.tanggal + ' | ' + (d.menu ?? '-');
+
+                    if (dipilih && String(dipilih) === String(d.id)) {
+                        opt.selected = true;
+                    }
+
+                    distribusiSelect.appendChild(opt);
+                });
+
+                distribusiSelect.disabled = data.length === 0;
+            } catch (error) {
+                setPlaceholder('Gagal memuat distribusi, coba lagi');
+                distribusiSelect.disabled = true;
+            }
+        }
+
+        sekolahSelect.addEventListener('change', function () {
+            muatDistribusi(sekolahSelect.value, null);
+        });
+
+        if (sekolahSelect.value) {
+            muatDistribusi(sekolahSelect.value, distribusiLama);
+        }
+    </script>
 @endsection

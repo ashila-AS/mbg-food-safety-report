@@ -31,6 +31,9 @@ Route::middleware(['auth', 'no-cache', 'role:pelapor'])->group(function () {
     Route::put('/laporan/{laporan}', [ReportController::class, 'update'])
         ->whereNumber('laporan')
         ->name('laporan.update');
+    Route::get('/sekolah/{sekolah}/distribusi', [ReportController::class, 'distribusiBySekolah'])
+        ->whereNumber('sekolah')
+        ->name('sekolah.distribusi');
 });
 
 Route::middleware(['auth', 'no-cache'])->group(function () {

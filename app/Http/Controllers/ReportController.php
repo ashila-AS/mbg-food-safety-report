@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateReportRequest;
 use App\Services\LaporanWorkflow;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Carbon;
 
 class ReportController extends Controller
 {
@@ -28,9 +29,22 @@ class ReportController extends Controller
     public function create()
     {
         $sekolah = Sekolah::orderBy('nama_sekolah')->get();
-        $distribusi = Distribusi::with('sekolah')->orderByDesc('tanggal')->get();
 
-        return view('laporan.create', compact('sekolah', 'distribusi'));
+        return view('laporan.create', compact('sekolah'));
+    }
+
+    public function distribusiBySekolah(Sekolah $sekolah)
+    {
+        $data = $sekolah->distribusi()
+            ->orderByDesc('tanggal')
+            ->get(['distribusi_id', 'tanggal', 'menu'])
+            ->map(fn ($d) => [
+                'id' => $d->distribusi_id,
+                'tanggal' => Carbon::parse($d->tanggal)->format('d/m/Y'),
+                'menu' => $d->menu,
+            ]);
+
+        return response()->json($data);
     }
 
     public function store(StoreReportRequest $request)
