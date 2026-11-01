@@ -40,6 +40,14 @@ class LaporanWorkflow
             ]);
         }
 
+        $needsNote = [Laporan::DIKEMBALIKAN, Laporan::DITANDAI];
+
+        if (in_array($to, $needsNote, true) && ! $laporan->catatan()->exists()) {
+            throw ValidationException::withMessages([
+                'status' => 'Tulis minimal satu catatan sebelum mengubah status ini.',
+            ]);
+        }
+
         $laporan->status = $to;
         $laporan->save();
     }

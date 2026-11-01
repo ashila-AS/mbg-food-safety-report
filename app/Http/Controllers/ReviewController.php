@@ -37,4 +37,20 @@ class ReviewController extends Controller
         return redirect()->route('laporan.show', $laporan)
             ->with('success', 'Catatan disimpan.');
     }
+
+    public function sendBack(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
+    {
+        $workflow->transition($laporan, Laporan::DIKEMBALIKAN, $request->user());
+
+        return redirect()->route('laporan.show', $laporan)
+            ->with('success', 'Laporan dikembalikan kepada pelapor untuk dilengkapi.');
+    }
+
+    public function flag(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
+    {
+        $workflow->transition($laporan, Laporan::DITANDAI, $request->user());
+
+        return redirect()->route('laporan.show', $laporan)
+            ->with('success', 'Laporan ditandai untuk diteruskan.');
+    }
 }

@@ -45,4 +45,10 @@ Route::middleware(['auth', 'no-cache', 'role:pemantau'])->group(function () {
     Route::post('/laporan/{laporan}/catatan', [ReviewController::class, 'addNote'])
         ->whereNumber('laporan')
         ->name('laporan.catatan');
+    Route::post('/laporan/{laporan}/kembalikan', [ReviewController::class, 'sendBack'])
+        ->whereNumber('laporan')
+        ->name('laporan.kembalikan');
+    Route::post('/laporan/{laporan}/tandai', [ReviewController::class, 'flag'])
+        ->whereNumber('laporan')
+        ->name('laporan.tandai');
 });

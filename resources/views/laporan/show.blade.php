@@ -107,6 +107,20 @@
             @endif
         @endif
 
+        @if (auth()->user()->role === 'pemantau' && $laporan->status === \App\Models\Laporan::DITINJAU)
+            <div style="display:flex; gap:8px; margin-top:18px;">
+                <form method="POST" action="{{ route('laporan.kembalikan', $laporan->laporan_id) }}">
+                    @csrf
+                    <button type="submit" class="btn-light">Kembalikan untuk dilengkapi</button>
+                </form>
+
+                <form method="POST" action="{{ route('laporan.tandai', $laporan->laporan_id) }}">
+                    @csrf
+                    <button type="submit">Tandai untuk diteruskan</button>
+                </form>
+            </div>
+        @endif
+
         <p style="margin-top:18px;">
             <a href="{{ auth()->user()->role === 'pelapor' ? route('laporan.index') : route('tinjauan.index') }}" class="btn btn-light">
                 Kembali
