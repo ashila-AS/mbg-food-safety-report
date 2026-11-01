@@ -1,33 +1,36 @@
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>@yield('title', 'Pelaporan Keamanan Makanan MBG')</title>
 
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --pink: #f9c5d1;
+            --pink-hover: #f4aebf;
+            --berry: #5a2433;
+
+            --matcha: #dcefd5;
+            --matcha-deep: #2f4f2f;
+
+            --bg: #fffafb;
+            --text: #3d2b30;
+            --line: #f3e2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: system-ui, sans-serif;
             margin: 0;
-            background: #f4f6f8;
-            color: #1f2933;
-        }
-
-        header {
-            background: #1f4e79;
-            color: #fff;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header a {
-            color: #fff;
-            text-decoration: none;
+            background: var(--bg);
+            color: var(--text);
         }
 
         main {
@@ -40,12 +43,24 @@
             background: #fff;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,.1);
-        }
-
-        .card {
+            box-shadow: 0 1px 3px rgba(90, 36, 51, .10);
             overflow-wrap: anywhere;
             word-break: break-word;
+        }
+
+        header {
+            background: var(--pink);
+            color: var(--berry);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--matcha);
+        }
+
+        header a {
+            color: var(--berry);
+            text-decoration: none;
         }
 
         .alert {
@@ -55,13 +70,13 @@
         }
 
         .alert-error {
-            background: #fde8e8;
-            color: #9b1c1c;
+            background: #fde4e8;
+            color: #9b2237;
         }
 
         .alert-success {
-            background: #def7ec;
-            color: #03543f;
+            background: #e3f3dc;
+            color: #2f5a2f;
         }
 
         label {
@@ -70,17 +85,27 @@
             font-weight: 600;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 8px 10px;
-            border: 1px solid #cbd2d9;
+            border: 1px solid #ecd3d9;
             border-radius: 6px;
             font: inherit;
         }
 
-        button, .btn {
-            background: #1f4e79;
-            color: #fff;
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid var(--matcha);
+            border-color: #8fc388;
+        }
+
+        button,
+        .btn {
+            background: var(--pink);
+            color: var(--berry);
             border: 0;
             padding: 9px 16px;
             border-radius: 6px;
@@ -90,9 +115,18 @@
             font: inherit;
         }
 
+        button:hover,
+        .btn:hover {
+            background: var(--pink-hover);
+        }
+
         .btn-light {
-            background: #e4e7eb;
-            color: #1f2933;
+            background: var(--matcha);
+            color: var(--matcha-deep);
+        }
+
+        .btn-light:hover {
+            background: #cbe5c1;
         }
 
         table {
@@ -100,20 +134,21 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             text-align: left;
             padding: 8px;
-            border-bottom: 1px solid #e4e7eb;
+            border-bottom: 1px solid var(--line);
         }
 
         .badge {
-            background: #e4e7eb;
+            background: var(--matcha);
+            color: var(--matcha-deep);
             padding: 2px 8px;
             border-radius: 10px;
             font-size: 13px;
         }
 
-        /* Pagination */
         .pagination {
             display: flex;
             gap: 6px;
@@ -127,61 +162,94 @@
         .pagination li span {
             display: block;
             padding: 6px 12px;
-            border: 1px solid #cbd2d9;
+            border: 1px solid #ecd3d9;
             border-radius: 6px;
             text-decoration: none;
-            color: #1f2933;
+            color: var(--berry);
             background: #fff;
         }
 
         .pagination li.active span {
-            background: #1f4e79;
+            background: var(--berry);
             color: #fff;
-            border-color: #1f4e79;
+            border-color: var(--berry);
         }
 
         .pagination li.disabled span {
-            color: #9aa5b1;
-            background: #f4f6f8;
+            color: #b8a4aa;
+            background: #f9f1f3;
         }
     </style>
 </head>
 
+
 <body>
+
     <header>
-        <div style="display:flex; gap:24px; align-items:center;">
+
+        <div style="display: flex; gap: 24px; align-items: center;">
+
             <a href="{{ route('dashboard') }}">
                 <strong>MBG Report</strong>
             </a>
 
             @auth
-                <nav style="display:flex; gap:16px;">
+                <nav style="display: flex; gap: 16px;">
+
                     @if (auth()->user()->role === 'pelapor')
-                        <a href="{{ route('laporan.create') }}">Buat laporan</a>
-                        <a href="{{ route('laporan.index') }}">Laporan saya</a>
+
+                        <a href="{{ route('laporan.create') }}">
+                            Buat laporan
+                        </a>
+
+                        <a href="{{ route('laporan.index') }}">
+                            Laporan saya
+                        </a>
+
                     @else
-                        <a href="{{ route('tinjauan.index') }}">Daftar laporan</a>
-                        <a href="{{ route('rekap.index') }}">Rekap</a>
+
+                        <a href="{{ route('tinjauan.index') }}">
+                            Daftar laporan
+                        </a>
+
+                        <a href="{{ route('rekap.index') }}">
+                            Rekap
+                        </a>
+
                     @endif
+
                 </nav>
             @endauth
+
         </div>
 
         @auth
-            <form method="POST" action="{{ route('logout') }}" style="display:flex; gap:12px; align-items:center;">
+            <form
+                method="POST"
+                action="{{ route('logout') }}"
+                style="display: flex; gap: 12px; align-items: center;"
+            >
                 @csrf
 
                 <span>
                     {{ auth()->user()->nama }}
-                    <span class="badge">{{ auth()->user()->role }}</span>
+
+                    <span class="badge">
+                        {{ auth()->user()->role }}
+                    </span>
                 </span>
 
-                <button type="submit" class="btn-light">Logout</button>
+                <button type="submit" class="btn-light">
+                    Logout
+                </button>
+
             </form>
         @endauth
+
     </header>
 
     <main>
+
         @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -189,6 +257,8 @@
         @endif
 
         @yield('content')
+
     </main>
+
 </body>
 </html>
