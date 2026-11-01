@@ -31,7 +31,22 @@
 </head>
 <body>
     <header>
-        <a href="{{ route('dashboard') }}"><strong>MBG Report</strong></a>
+        <div style="display:flex; gap:24px; align-items:center;">
+            <a href="{{ route('dashboard') }}"><strong>MBG Report</strong></a>
+
+            @auth
+                <nav style="display:flex; gap:16px;">
+                    @if (auth()->user()->role === 'pelapor')
+                        <a href="{{ route('laporan.create') }}">Buat laporan</a>
+                        <a href="{{ route('laporan.index') }}">Laporan saya</a>
+                    @else
+                        <a href="{{ route('tinjauan.index') }}">Daftar laporan</a>
+                        <a href="{{ route('rekap.index') }}">Rekap</a>
+                    @endif
+                </nav>
+            @endauth
+        </div>
+
         @auth
             <form method="POST" action="{{ route('logout') }}" style="display:flex; gap:12px; align-items:center;">
                 @csrf
