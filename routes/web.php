@@ -42,4 +42,7 @@ Route::middleware(['auth', 'no-cache', 'role:pemantau'])->group(function () {
     Route::post('/laporan/{laporan}/mulai-tinjau', [ReviewController::class, 'start'])
         ->whereNumber('laporan')
         ->name('laporan.mulai-tinjau');
+    Route::post('/laporan/{laporan}/catatan', [ReviewController::class, 'addNote'])
+        ->whereNumber('laporan')
+        ->name('laporan.catatan');
 });

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Laporan;
+use App\Models\CatatanLaporan;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
@@ -41,5 +42,20 @@ class LaporanWorkflow
 
         $laporan->status = $to;
         $laporan->save();
+    }
+
+    public function addNote(Laporan $laporan, User $user, string $isi): void
+    {
+        if ($user->role !== 'pemantau' || $laporan->status !== Laporan::DITINJAU) {
+            throw ValidationException::withMessages([
+                'isi' => 'Catatan hanya dapat ditulis pemantau saat laporan berstatus Ditinjau.',
+            ]);
+        }
+
+        CatatanLaporan::create([
+            'laporan_id' => $laporan->getKey(),
+            'user_id' => $user->getKey(),
+            'isi' => $isi,
+        ]);
     }
 }

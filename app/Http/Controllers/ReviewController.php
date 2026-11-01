@@ -17,12 +17,24 @@ class ReviewController extends Controller
         return view('tinjauan.index', compact('laporan'));
     }
 
-        public function start(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
+    public function start(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
     {
         $laporan->peninjau_id = $request->user()->getKey();
         $workflow->transition($laporan, Laporan::DITINJAU, $request->user());
 
         return redirect()->route('laporan.show', $laporan)
             ->with('success', 'Laporan mulai ditinjau.');
+    }
+
+    public function addNote(Request $request, Laporan $laporan, LaporanWorkflow $workflow)
+    {
+        $data = $request->validate([
+            'isi' => ['required', 'string', 'min:5', 'max:1000'],
+        ]);
+
+        $workflow->addNote($laporan, $request->user(), $data['isi']);
+
+        return redirect()->route('laporan.show', $laporan)
+            ->with('success', 'Catatan disimpan.');
     }
 }

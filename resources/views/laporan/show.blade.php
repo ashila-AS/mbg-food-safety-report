@@ -82,6 +82,31 @@
             </form>
         @endif
 
+        @if (auth()->user()->role !== 'pelapor')
+            <h3 style="margin-top:24px;">Catatan peninjauan</h3>
+
+            @forelse ($laporan->catatan->sortBy('waktu') as $c)
+                <p style="margin:6px 0;">
+                    <strong>{{ $c->penulis->nama }}</strong>
+                    <small>{{ $c->waktu->format('d/m/Y H:i') }}</small><br>
+                    {!! nl2br(e($c->isi)) !!}
+                </p>
+            @empty
+                <p>Belum ada catatan.</p>
+            @endforelse
+
+            @if (auth()->user()->role === 'pemantau' && $laporan->status === \App\Models\Laporan::DITINJAU)
+                <form method="POST" action="{{ route('laporan.catatan', $laporan->laporan_id) }}">
+                    @csrf
+
+                    <label for="isi">Tulis catatan</label>
+                    <textarea name="isi" id="isi" rows="3" required>{{ old('isi') }}</textarea>
+
+                    <button type="submit" style="margin-top:8px;">Simpan catatan</button>
+                </form>
+            @endif
+        @endif
+
         <p style="margin-top:18px;">
             <a href="{{ auth()->user()->role === 'pelapor' ? route('laporan.index') : route('tinjauan.index') }}" class="btn btn-light">
                 Kembali

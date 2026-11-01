@@ -30,7 +30,7 @@ class ReportController extends Controller
         return view('laporan.create', compact('sekolah', 'distribusi'));
     }
 
-        public function store(StoreReportRequest $request)
+    public function store(StoreReportRequest $request)
     {
         $laporan = new Laporan($request->safe()->only([
             'distribusi_id',
@@ -51,7 +51,7 @@ class ReportController extends Controller
             ->with('success', 'Laporan berhasil dikirim.');
     }
 
-        public function show(Request $request, Laporan $laporan)
+    public function show(Request $request, Laporan $laporan)
     {
         Gate::authorize('view', $laporan);
 
@@ -59,12 +59,14 @@ class ReportController extends Controller
 
         if ($request->user()->role === 'pelapor') {
             $laporan->load('pelapor');
+        } else {
+            $laporan->load('catatan.penulis');
         }
 
         return view('laporan.show', compact('laporan'));
     }
 
-        public function evidence(Laporan $laporan)
+    public function evidence(Laporan $laporan)
     {
         Gate::authorize('downloadEvidence', $laporan);
 
