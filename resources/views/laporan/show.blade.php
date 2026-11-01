@@ -44,7 +44,13 @@
             </tr>
             <tr>
                 <th>Bukti pendukung</th>
-                <td>{{ $laporan->path_bukti ? 'Ada' : 'Tidak ada' }}</td>
+                <td>
+                    @if ($laporan->path_bukti)
+                        <a href="{{ route('laporan.bukti', $laporan->laporan_id) }}" target="_blank">Lihat bukti</a>
+                    @else
+                        Tidak ada
+                    @endif
+                </td>
             </tr>
             <tr>
                 <th>Dikirim</th>

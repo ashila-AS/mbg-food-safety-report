@@ -28,4 +28,7 @@ Route::middleware(['auth', 'no-cache'])->group(function () {
     Route::get('/laporan/{laporan}', [ReportController::class, 'show'])
         ->whereNumber('laporan')
         ->name('laporan.show');
+    Route::get('/laporan/{laporan}/bukti', [ReportController::class, 'evidence'])
+        ->whereNumber('laporan')
+        ->name('laporan.bukti');
 });

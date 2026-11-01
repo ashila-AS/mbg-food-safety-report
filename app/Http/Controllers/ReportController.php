@@ -8,6 +8,7 @@ use App\Models\Laporan;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
@@ -57,5 +58,17 @@ class ReportController extends Controller
         $laporan->load('distribusi.sekolah', 'pelapor');
 
         return view('laporan.show', compact('laporan'));
+    }
+
+        public function evidence(Laporan $laporan)
+    {
+        Gate::authorize('downloadEvidence', $laporan);
+
+        abort_if(
+            ! $laporan->path_bukti || ! Storage::disk('local')->exists($laporan->path_bukti),
+            404
+        );
+
+        return Storage::disk('local')->response($laporan->path_bukti);
     }
 }
